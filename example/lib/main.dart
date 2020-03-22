@@ -20,13 +20,24 @@ class GolApp extends StatelessWidget {
 
 /// _MyScaffold makes a GridWorld, then tries to expand it to fit into
 /// the current media to make a single GolGrid to fill the screen.
+///
 /// Alternatively, one could show a stack of GolGrids or whatever.
 class _MyScaffold extends StatelessWidget {
+
+  /// A GridWorld to display.
+  /// Would be nice to have a choice in-app,
+  /// provided by the AppBar hamburger menu or whatever.
   static final GridWorld _initialWorld = ConwayEvolver.gunFight()
       .appendBottom(
           ConwayEvolver.rPentimino.padLeft(30).padTop(10).padBottom(10))
       .appendBottom(ConwayEvolver.gunFight())
       .lrPadded(6);
+
+  /// A guess as to the media height (virtual pixels) consumed by the AppBar.
+  /// Needed to size the GridWorld to take up the viewable area.
+  /// TODO: Instead of guessing, look up the appbar via a key, e.g.
+  /// medium.com/@diegoveloper/flutter-widget-size-and-position-b0a9ffed9407
+  static double get _estimatedAppBarHeight => 82;
 
   /// Return integer widths and heights for use in optional expansion
   /// of a world to fill the media available from the context.
@@ -36,17 +47,18 @@ class _MyScaffold extends StatelessWidget {
         GolGrid.cellCountInHeight(s.height - _estimatedAppBarHeight));
   }
 
-  /// There must be a better way to figure out how much of the
-  /// media height is consumed by the app bar.
-  /// perhaps https://medium.com/@diegoveloper/flutter-widget-size-and-position-b0a9ffed9407
-  static double get _estimatedAppBarHeight => 82;
+  static GridWorld _embiggen(BuildContext c, GridWorld w) {
+    final avail = _sizeAvailableToShowGrid(c);
+    // This throws if initial world is too big to fit.
+    // Could try using clipping to show a window into oversized grids.
+    return _initialWorld.expandToFit(avail.item1, avail.item2);
+  }
+
+  static final bool _useFullScreen = true;
 
   @override
   Widget build(BuildContext c) {
-    var avail = _sizeAvailableToShowGrid(c);
-    // This throws if initial world is too big to fit.
-    // Could try using clipping to show a window into oversized grids.
-    final w = _initialWorld.expandToFit(avail.item1, avail.item2);
+    final w = _useFullScreen ? _embiggen(c, _initialWorld) : _initialWorld;
     return BlocProvider(
       create: (context) => ThumperBloc<GridWorld>.fromIterable(
           GridWorldIterable(w, limit: 5000)),
@@ -57,7 +69,6 @@ class _MyScaffold extends StatelessWidget {
           leading: Icon(Icons.menu),
         ),
         body: Center(child: _golGrid(w)),
-        //floatingActionButton: _myFab(),
       ),
     );
   }
@@ -67,12 +78,5 @@ class _MyScaffold extends StatelessWidget {
         controlsForegroundColor: Colors.lightGreenAccent,
         foregroundColor: Colors.lightBlueAccent,
         backgroundColor: Colors.black,
-      );
-
-  Widget _myFab() => FloatingActionButton(
-        onPressed: () {},
-        tooltip: 'add world?',
-        child: Icon(Icons.party_mode),
-        // Icon.play  skip_next
       );
 }

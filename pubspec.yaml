@@ -1,6 +1,6 @@
 name:  gol_grid
 description: A widget showing a controllable square grid of cellular automata.
-version: 0.1.0
+version: 0.1.1
 homepage: https://github.com/monopole/gol_grid
 
 environment:
