@@ -1,6 +1,6 @@
 # GolGrid
 
-A `GolGrid` is a flutter widget showing
+A [`GolGrid`] is a flutter widget showing
 a [`GridWorld`] controlled by a [`Thumper`].
 
 I.e. it's Conway's [Game of Life] in a flutter widget.
@@ -18,15 +18,33 @@ cruising below an [R-pentomino].
 | ----------------------- | ----------------------- |
 | ![screen shot 1][shot1] | ![screen shot 2][shot2] |
 
-
-To run it, install [flutter] then:
+Install [flutter], then
 
 ```bash
+# Confirm you have some devices.
+flutter devices
+
+# Get the code
 git clone git@github.com:monopole/gol_grid.git
 cd gol_grid/example
-flutter -d web run
 ```
 
+For chrome (at time of writing, requires [beta channel flutter]):
+
+```bash
+flutter -d chrome run -t lib/web.dart
+```
+
+For android, plug in your phone, enable dev options and
+allow file transfer over USB, then:
+
+```bash
+# See `flutter devices` for possible arguments
+flutter -d pixel
+```
+
+[beta channel flutter]: https://flutter.dev/docs/get-started/web
+[`GolGrid`]: https://pub.dev/packages/gol_grid
 [`GridWorld`]: https://pub.dev/packages/grid_world
 [`Thumper`]: https://pub.dev/packages/thumper
 [Game of Life]: https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life

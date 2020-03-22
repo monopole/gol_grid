@@ -7,17 +7,6 @@ import 'package:tuple/tuple.dart';
 
 void main() => runApp(GolApp());
 
-class GolApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) => MaterialApp(
-        title: 'Game of Life Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: _MyScaffold(),
-      );
-}
-
 /// A GridWorld to display.
 final GridWorld fancyWorld = ConwayEvolver.gunFight()
     .appendBottom(ConwayEvolver.rPentimino.padLeft(30).tbPadded(27))
@@ -30,8 +19,23 @@ final GridWorld simpleWorld = ConwayEvolver.rPentimino
     .appendBottom(ConwayEvolver.lightweightSpaceship)
     .padBottom(1);
 
-/// Shows one GolGrid widget, centered, with an AppBar that doesn't do
-/// anything yet.
+class GolApp extends StatelessWidget {
+  final bool isWebDemo;
+
+  GolApp({this.isWebDemo = false});
+
+  @override
+  Widget build(BuildContext context) => MaterialApp(
+        title: 'Game of Life Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: _MyScaffold(useFullScreen: !isWebDemo, doFancyDemo: !isWebDemo),
+      );
+}
+
+/// Shows one GolGrid widget, centered,
+/// with an AppBar that doesn't do anything yet.
 class _MyScaffold extends StatelessWidget {
   /// A guess as to the media height (virtual pixels) consumed by the AppBar.
   /// TODO: Instead of guessing, look up the appbar via a key, e.g.
@@ -57,19 +61,21 @@ class _MyScaffold extends StatelessWidget {
     return w.expandToFit(avail.item1, avail.item2);
   }
 
-  // An android demo should set both of these true;
-  // a web demo is better off doing the opposite.
-  static final bool _useFullScreen = false;
-  static final bool _doFancyDemo = false;
+  // An android demo should set both of these true.
+  // A web demo is better off doing the opposite.
+  final bool useFullScreen;
+  final bool doFancyDemo;
 
+  _MyScaffold({this.useFullScreen = true, this.doFancyDemo = true});
   @override
   Widget build(BuildContext c) {
-    var dimensions = _doFancyDemo
+    var dimensions = doFancyDemo
         ? GolGridDimensions()
         : GolGridDimensions(lineWidth: 3, cellWidth: 9);
+
     /// Could use AppBar hamburger menu to choose this stuff.
-    var w = _doFancyDemo ? fancyWorld : simpleWorld;
-    w = _useFullScreen ? _embiggen(c, w, dimensions) : w;
+    var w = doFancyDemo ? fancyWorld : simpleWorld;
+    w = useFullScreen ? _embiggen(c, w, dimensions) : w;
     return BlocProvider(
       create: (context) => ThumperBloc<GridWorld>.fromIterable(
           GridWorldIterable(w, limit: 5000)),
@@ -80,8 +86,7 @@ class _MyScaffold extends StatelessWidget {
           leading: Icon(Icons.menu), // Does nothing at the moment.
         ),
         body: Container(
-          color: Colors.black45,
-            child: Center(child: GolGrid(dimensions))),
+            color: Colors.black45, child: Center(child: GolGrid(dimensions))),
       ),
     );
   }
