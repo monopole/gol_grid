@@ -27,8 +27,8 @@ class GolGrid extends StatelessWidget {
   GolGrid(GridWorld gw,
       {this.controlsForegroundColor = Colors.lightGreenAccent,
       this.controlsBackgroundColor = Colors.black54,
-      this.foregroundColor = Colors.green,
-      this.backgroundColor = Colors.purple})
+      this.foregroundColor = Colors.lightBlueAccent,
+      this.backgroundColor = Colors.black})
       : _gwSize = _CellPainter.worldSize(gw);
 
   Widget build(BuildContext c) =>
