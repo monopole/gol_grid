@@ -1,0 +1,22 @@
+name: golapp
+description: Demo of gol_grid.
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  grid_world: ^0.1.10
+  thumper: ^0.1.2
+  gol_grid:
+    path: ../
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true

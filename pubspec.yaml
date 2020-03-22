@@ -1,0 +1,22 @@
+name:  gol_grid
+description: A widget showing a controllable square grid of cellular automata.
+version: 0.1.0
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  test: ^1.14.2
+  grid_world: ^0.1.10
+  thumper: ^0.1.2
+  flutter_bloc: ^3.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+
