@@ -35,15 +35,12 @@ class GolGrid extends StatelessWidget {
       );
 
   Widget _column(GridWorld gw, Size size) => PreferredSize(
-        preferredSize: Size(size.width, size.height + Thumper.maxHeight),
+        preferredSize: Size(size.width, size.height + Thumper.height),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _paintedGrid(gw, size),
-            Thumper<GridWorld>(
-                onColor: controlsForegroundColor,
-                backgroundColor: controlsBackgroundColor,
-                maxWidth: size.width),
+            Thumper<GridWorld>(onColor: controlsForegroundColor),
           ],
         ),
       );
@@ -95,7 +92,7 @@ class GolGridDimensions {
   /// Lets the client see how many Gol cells will fit in a given height, given
   /// the fixed cell, line and control widths used by this widget.
   int cellCountInHeight(double length) =>
-      howManyCellsFit(length - Thumper.maxHeight);
+      howManyCellsFit(length - Thumper.height);
 
   /// Like [cellCountInHeight], but for width.
   int cellCountInWidth(double length) => howManyCellsFit(length);

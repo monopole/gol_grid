@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   grid_world: ^0.1.10
-  thumper: ^0.1.2
+  thumper: ^0.1.6
   gol_grid:
     path: ../
 

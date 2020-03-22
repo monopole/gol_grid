@@ -1,3 +1,6 @@
+## 0.1.4
+ - Upgrade to latest thumper, add screenshots.
+
 ## 0.1.3
  - Tweak example.
 

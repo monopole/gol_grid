@@ -57,8 +57,8 @@ class _MyScaffold extends StatelessWidget {
     return w.expandToFit(avail.item1, avail.item2);
   }
 
-  // An android demo should set both of these true; a web demo is better
-  // off doing the opposite.
+  // An android demo should set both of these true;
+  // a web demo is better off doing the opposite.
   static final bool _useFullScreen = false;
   static final bool _doFancyDemo = false;
 
@@ -67,15 +67,14 @@ class _MyScaffold extends StatelessWidget {
     var dimensions = _doFancyDemo
         ? GolGridDimensions()
         : GolGridDimensions(lineWidth: 3, cellWidth: 9);
-    /// Would be nice to have a world choice in-app,
-    /// provided by the AppBar hamburger menu or whatever.
+    /// Could use AppBar hamburger menu to choose this stuff.
     var w = _doFancyDemo ? fancyWorld : simpleWorld;
     w = _useFullScreen ? _embiggen(c, w, dimensions) : w;
     return BlocProvider(
       create: (context) => ThumperBloc<GridWorld>.fromIterable(
           GridWorldIterable(w, limit: 5000)),
       child: Scaffold(
-        backgroundColor: Colors.blue.shade100,
+        backgroundColor: Colors.black,
         appBar: AppBar(
           title: Text('game of life'),
           leading: Icon(Icons.menu), // Does nothing at the moment.
