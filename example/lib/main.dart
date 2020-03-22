@@ -18,20 +18,21 @@ class GolApp extends StatelessWidget {
       );
 }
 
-/// _MyScaffold makes a GridWorld, then tries to expand it to fit into
-/// the current media to make a single GolGrid to fill the screen.
-///
-/// Alternatively, one could show a stack of GolGrids or whatever.
-class _MyScaffold extends StatelessWidget {
-  /// A GridWorld to display.
-  /// Would be nice to have a choice in-app,
-  /// provided by the AppBar hamburger menu or whatever.
-  static final GridWorld _initialWorld = ConwayEvolver.gunFight()
-      .appendBottom(
-          ConwayEvolver.rPentimino.padLeft(30).padTop(10).padBottom(10))
-      .appendBottom(ConwayEvolver.gunFight())
-      .lrPadded(6);
+/// A GridWorld to display.
+final GridWorld fancyWorld = ConwayEvolver.gunFight()
+    .appendBottom(ConwayEvolver.rPentimino.padLeft(30).tbPadded(27))
+    .appendBottom(ConwayEvolver.gunFight())
+    .lrPadded(6);
 
+/// Another world to display
+final GridWorld simpleWorld = ConwayEvolver.rPentimino
+    .padded(12)
+    .appendBottom(ConwayEvolver.lightweightSpaceship)
+    .padBottom(1);
+
+/// Shows one GolGrid widget, centered, with an AppBar that doesn't do
+/// anything yet.
+class _MyScaffold extends StatelessWidget {
   /// A guess as to the media height (virtual pixels) consumed by the AppBar.
   /// TODO: Instead of guessing, look up the appbar via a key, e.g.
   /// medium.com/@diegoveloper/flutter-widget-size-and-position-b0a9ffed9407
@@ -39,26 +40,37 @@ class _MyScaffold extends StatelessWidget {
 
   /// Return the width and height of the media available for drawing
   /// in integer GolGrid cell units. Takes AppBar into account.
-  static Tuple2<int, int> _sizeAvailableToShowGrid(BuildContext c) {
+  static Tuple2<int, int> _sizeAvailableToShowGrid(
+      BuildContext c, GolGridDimensions d) {
     Size s = MediaQuery.of(c).size;
-    return Tuple2(GolGrid.cellCountInWidth(s.width),
-        GolGrid.cellCountInHeight(s.height - _estimatedAppBarHeight));
+    print(MediaQuery.of(c));
+    return Tuple2(d.cellCountInWidth(s.width),
+        d.cellCountInHeight(s.height - _estimatedAppBarHeight));
   }
 
   /// Add rows and columns to the world, to give the cellular automata
   /// as much space as possible to maneuver.
-  static GridWorld _embiggen(BuildContext c, GridWorld w) {
-    final avail = _sizeAvailableToShowGrid(c);
+  static GridWorld _embiggen(BuildContext c, GridWorld w, GolGridDimensions d) {
+    final avail = _sizeAvailableToShowGrid(c, d);
     // This throws if initial world is too big to fit.
     // Could try using clipping to show a window into oversized grids.
     return w.expandToFit(avail.item1, avail.item2);
   }
 
-  static final bool _useFullScreen = true;
+  // An android demo should set both of these true; a web demo is better
+  // off doing the opposite.
+  static final bool _useFullScreen = false;
+  static final bool _doFancyDemo = false;
 
   @override
   Widget build(BuildContext c) {
-    final w = _useFullScreen ? _embiggen(c, _initialWorld) : _initialWorld;
+    var dimensions = _doFancyDemo
+        ? GolGridDimensions()
+        : GolGridDimensions(lineWidth: 3, cellWidth: 9);
+    /// Would be nice to have a world choice in-app,
+    /// provided by the AppBar hamburger menu or whatever.
+    var w = _doFancyDemo ? fancyWorld : simpleWorld;
+    w = _useFullScreen ? _embiggen(c, w, dimensions) : w;
     return BlocProvider(
       create: (context) => ThumperBloc<GridWorld>.fromIterable(
           GridWorldIterable(w, limit: 5000)),
@@ -68,7 +80,7 @@ class _MyScaffold extends StatelessWidget {
           title: Text('game of life'),
           leading: Icon(Icons.menu), // Does nothing at the moment.
         ),
-        body: Center(child: GolGrid(w)),
+        body: Center(child: GolGrid(dimensions)),
       ),
     );
   }

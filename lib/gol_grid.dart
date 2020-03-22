@@ -5,58 +5,53 @@ import 'package:thumper/thumper.dart';
 
 /// GolGrid shows a GridWorld controlled by a Thumper<GridWorld>.
 class GolGrid extends StatelessWidget {
-  /// Lets the client see how many Gol cells will fit in a given height, given
-  /// the fixed cell, line and control widths used by this widget.
-  static int cellCountInHeight(double length) =>
-      _CellPainter.howManyCellsFit(length - Thumper.maxHeight);
-
-  /// Like [_cellCountInHeight], but for width.
-  static int cellCountInWidth(double length) =>
-      _CellPainter.howManyCellsFit(length);
-
   final Color controlsForegroundColor;
   final Color controlsBackgroundColor;
   final Color foregroundColor;
   final Color backgroundColor;
-  final Size _gwSize;
+
+  /// Calculator for this widget.
+  final GolGridDimensions _dim;
 
   /// Returns a widget just big enough to hold the GridWorld passed as an arg.
   /// The world passed as an argument is discarded; it's only used for sizing.
   /// It's assumed that the worlds provided in the state stream from
   /// ThumperBloc<GridWorld> will all have the same size as this argument.
-  GolGrid(GridWorld gw,
-      {this.controlsForegroundColor = Colors.lightGreenAccent,
-      this.controlsBackgroundColor = Colors.black54,
-      this.foregroundColor = Colors.lightBlueAccent,
-      this.backgroundColor = Colors.black})
-      : _gwSize = _CellPainter.worldSize(gw);
+  GolGrid(
+    this._dim, {
+    this.controlsForegroundColor = Colors.lightGreenAccent,
+    this.controlsBackgroundColor = Colors.black54,
+    this.foregroundColor = Colors.lightBlueAccent,
+    this.backgroundColor = Colors.black,
+  });
 
   Widget build(BuildContext c) =>
       BlocBuilder<ThumperBloc<GridWorld>, ThumperState>(
         condition: (previousState, incomingState) =>
             incomingState.thumpCount != previousState.thumpCount,
-        builder: (context, state) => _column(state.thing),
+        builder: (context, state) {
+          return _column(state.thing, _dim.worldSize(state.thing));
+        },
       );
 
-  Widget _column(GridWorld gw) => PreferredSize(
-        preferredSize: Size(_gwSize.width, _gwSize.height + Thumper.maxHeight),
+  Widget _column(GridWorld gw, Size size) => PreferredSize(
+        preferredSize: Size(size.width, size.height + Thumper.maxHeight),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          //crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _paintedGrid(gw),
+            _paintedGrid(gw, size),
             Thumper<GridWorld>(
                 onColor: controlsForegroundColor,
                 backgroundColor: controlsBackgroundColor,
-                maxWidth: _gwSize.width),
+                maxWidth: size.width),
           ],
         ),
       );
 
-  Widget _paintedGrid(GridWorld gw) => CustomPaint(
-        foregroundPainter: _CellPainter(gw, foregroundColor),
-        painter: _BackgroundPainter(_gwSize, backgroundColor),
-        size: _gwSize,
+  Widget _paintedGrid(GridWorld gw, Size size) => CustomPaint(
+        foregroundPainter: _CellPainter(gw, _dim, foregroundColor),
+        painter: _BackgroundPainter(size, backgroundColor),
+        size: size,
       );
 }
 
@@ -86,20 +81,26 @@ class _BackgroundPainter extends CustomPainter {
   bool shouldRepaint(_BackgroundPainter oldPainter) => false;
 }
 
-/// _CellPainter knows how wide cells are, their color,
-/// their separation, etc.  It doesn't draw grid lines
-/// or dead cells; that's just the background
-/// showing through.
-class _CellPainter extends CustomPainter {
+/// Calculates various dimensions.
+class GolGridDimensions {
   /// Grid line width in logical pixels.
-  static final int _lineWidth = 1;
+  final int lineWidth;
 
   /// Grid cell width in logical pixels.
-  static final int _cellWidth = 3 * _lineWidth;
+  final int cellWidth;
+
+  /// Cell size in logical pixels.
+  final Size cellSize;
+
+  /// Lets the client see how many Gol cells will fit in a given height, given
+  /// the fixed cell, line and control widths used by this widget.
+  int cellCountInHeight(double length) =>
+      howManyCellsFit(length - Thumper.maxHeight);
+
+  /// Like [cellCountInHeight], but for width.
+  int cellCountInWidth(double length) => howManyCellsFit(length);
 
   /// Cells are square.
-  static final Size _cellSize = _makeCellSize(_cellWidth);
-
   static Size _makeCellSize(int w) => Size(w.toDouble(), w.toDouble());
 
   /// How many cells can be crammed into the given length?
@@ -120,26 +121,35 @@ class _CellPainter extends CustomPainter {
   ///  qed: nCells = (length + _lineWidth) / (_lineWidth + _cellWidth)
   ///
   /// In other case, we have to take the floor.
-  static int howManyCellsFit(double length) =>
-      ((length + _lineWidth) / (_cellWidth + _lineWidth)).floor();
+  int howManyCellsFit(double length) =>
+      ((length + lineWidth) / (cellWidth + lineWidth)).floor();
 
-  static Size worldSize(GridWorld gw) =>
-      Size(_offset(gw.nCols), _offset(gw.nRows));
+  Size worldSize(GridWorld gw) => Size(offset(gw.nCols), offset(gw.nRows));
 
-  static double _offset(int i) =>
-      (_lineWidth + (i * (_cellWidth + _lineWidth))).toDouble();
+  double offset(int i) =>
+      (lineWidth + (i * (cellWidth + lineWidth))).toDouble();
+
+  GolGridDimensions({this.lineWidth = 1, this.cellWidth = 3})
+      : assert(cellWidth > 0 && lineWidth > 0),
+        cellSize = _makeCellSize(cellWidth);
+}
+
+/// _CellPainter knows how wide cells are, their color,
+/// their separation, etc.  It doesn't draw grid lines
+/// or dead cells; that's just the background
+/// showing through.
+class _CellPainter extends CustomPainter {
+  final GolGridDimensions _c;
+  final GridWorld _gw;
+  final Paint _cellPaint;
 
   /// Cells could presumably be partially transparent too.
   static Paint _makeCellPaint(Color color) {
     return Paint()..color = color;
   }
 
-  final GridWorld _gw;
-  final Paint _cellPaint;
-
-  _CellPainter(GridWorld gw, Color foregroundColor)
-      : _gw = gw,
-        _cellPaint = _makeCellPaint(foregroundColor);
+  _CellPainter(this._gw, this._c, Color foregroundColor)
+      : _cellPaint = _makeCellPaint(foregroundColor);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -147,7 +157,7 @@ class _CellPainter extends CustomPainter {
       for (int j = 0; j < _gw.nCols; j++) {
         if (_gw.isAlive(i, j)) {
           // Only draw live cells; assume dead cell matches background.
-          Rect r = Offset(_offset(j), _offset(i)) & _cellSize;
+          Rect r = Offset(_c.offset(j), _c.offset(i)) & _c.cellSize;
           canvas.drawRect(r, _cellPaint);
         }
       }

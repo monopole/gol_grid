@@ -3,9 +3,9 @@ import 'package:gol_grid/gol_grid.dart';
 import 'package:grid_world/grid_world.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('TODO add a bloc and test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(GolGrid(ConwayEvolver.blinker));
+//    await tester.pumpWidget(GolGrid(GolGridDimensions()));
 
 //    // Verify that our counter starts at 0.
 //    expect(find.text('0'), findsOneWidget);
@@ -22,7 +22,7 @@ void main() {
 
 
   test('toString', () {
-    var grid = GolGrid(ConwayEvolver.blinker);
+    var grid = GolGrid(GolGridDimensions());
     expect(grid.toString(), equals('GolGrid'));
   });
 }
