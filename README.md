@@ -1,11 +1,16 @@
-# golgrid
+# GolGrid
 
-A Game of Life widget.
+A `GolGrid` is a flutter widget showing
+a [`GridWorld`] controlled by a [`Thumper`].
+
+I.e. it's Conway's [Game of Life] in a flutter widget.
+The widget iterates through evolutionary steps of
+a given world via the `Thumper`.
 
 ### Example
 
 The [example] iterates through steps in
-a simple world with a lightweight [spaceship]
+a world with a lightweight [spaceship]
 cruising below an [R-pentomino].
 
 
@@ -22,8 +27,11 @@ cd gol_grid/example
 flutter -d web run
 ```
 
-[R-pentomino]: https://www.conwaylife.com/wiki/R-pentomino
-[spaceship]: https://www.conwaylife.com/wiki/Spaceship
+[`GridWorld`]: https://pub.dev/packages/grid_world
+[`Thumper`]: https://pub.dev/packages/thumper
+[Game of Life]: https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
+[R-pentomino]: https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life#Examples_of_patterns
+[spaceship]: https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life#Examples_of_patterns
 [example]: ./example/lib/main.dart
 [shot1]: ./images/shot1.png
 [shot2]: ./images/shot2.png

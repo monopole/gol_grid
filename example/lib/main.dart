@@ -74,12 +74,14 @@ class _MyScaffold extends StatelessWidget {
       create: (context) => ThumperBloc<GridWorld>.fromIterable(
           GridWorldIterable(w, limit: 5000)),
       child: Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.black26,
         appBar: AppBar(
           title: Text('game of life'),
           leading: Icon(Icons.menu), // Does nothing at the moment.
         ),
-        body: Center(child: GolGrid(dimensions)),
+        body: Container(
+          color: Colors.black45,
+            child: Center(child: GolGrid(dimensions))),
       ),
     );
   }

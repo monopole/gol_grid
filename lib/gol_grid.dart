@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grid_world/grid_world.dart';
 import 'package:thumper/thumper.dart';
 
-/// GolGrid shows a GridWorld controlled by a Thumper<GridWorld>.
+/// GolGrid is a widget showing a GridWorld controlled by a Thumper<GridWorld>.
 class GolGrid extends StatelessWidget {
   final Color controlsForegroundColor;
   final Color controlsBackgroundColor;
@@ -13,10 +13,10 @@ class GolGrid extends StatelessWidget {
   /// Calculator for this widget.
   final GolGridDimensions _dim;
 
-  /// Returns a widget just big enough to hold the GridWorld passed as an arg.
-  /// The world passed as an argument is discarded; it's only used for sizing.
+  /// Returns a widget sized to its [GolGridDimensions] argument.
   /// It's assumed that the worlds provided in the state stream from
-  /// ThumperBloc<GridWorld> will all have the same size as this argument.
+  /// ThumperBloc<GridWorld> will all have matching dimensions (this is
+  /// assured if they came from a [GridWorldIterable]).
   GolGrid(
     this._dim, {
     this.controlsForegroundColor = Colors.lightGreenAccent,
@@ -33,22 +33,21 @@ class GolGrid extends StatelessWidget {
           return _column(state.thing, _dim.worldSize(state.thing));
         },
       );
-
-  Widget _column(GridWorld gw, Size size) => PreferredSize(
-        preferredSize: Size(size.width, size.height + Thumper.height),
+  Widget _column(GridWorld gw, Size size) => Container(
+        width: size.width,
+        height: size.height + Thumper.height,
+        color: backgroundColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _paintedGrid(gw, size),
+            CustomPaint(
+              foregroundPainter: _CellPainter(gw, _dim, foregroundColor),
+              painter: _BackgroundPainter(size, backgroundColor),
+              size: size,
+            ),
             Thumper<GridWorld>(onColor: controlsForegroundColor),
           ],
         ),
-      );
-
-  Widget _paintedGrid(GridWorld gw, Size size) => CustomPaint(
-        foregroundPainter: _CellPainter(gw, _dim, foregroundColor),
-        painter: _BackgroundPainter(size, backgroundColor),
-        size: size,
       );
 }
 
