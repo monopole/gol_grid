@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gol_grid/gol_grid.dart';
 import 'package:grid_world/grid_world.dart';
 import 'package:thumper/thumper.dart';
-import 'package:gol_grid/gol_grid.dart';
 import 'package:tuple/tuple.dart';
 
 void main() => runApp(GolApp());
@@ -51,7 +51,7 @@ class _MyScaffold extends StatelessWidget {
     final avail = _sizeAvailableToShowGrid(c);
     // This throws if initial world is too big to fit.
     // Could try using clipping to show a window into oversized grids.
-    return _initialWorld.expandToFit(avail.item1, avail.item2);
+    return w.expandToFit(avail.item1, avail.item2);
   }
 
   static final bool _useFullScreen = true;

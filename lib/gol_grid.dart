@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:grid_world/grid_world.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grid_world/grid_world.dart';
 import 'package:thumper/thumper.dart';
 
 /// GolGrid shows a GridWorld controlled by a Thumper<GridWorld>.
