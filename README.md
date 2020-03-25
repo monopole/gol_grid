@@ -26,7 +26,9 @@ flutter devices
 
 # Get the code
 git clone git@github.com:monopole/gol_grid.git
-cd gol_grid/example
+cd gol_grid
+flutter test
+cd example
 ```
 
 For chrome (at time of writing, requires [beta channel flutter]):
@@ -40,7 +42,7 @@ allow file transfer over USB, then:
 
 ```bash
 # See `flutter devices` for possible arguments
-flutter -d pixel
+flutter -d pixel run
 ```
 
 [beta channel flutter]: https://flutter.dev/docs/get-started/web

@@ -3,35 +3,46 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grid_world/grid_world.dart';
 import 'package:thumper/thumper.dart';
 
+// ignore_for_file: diagnostic_describe_all_properties
+
 /// GolGrid is a widget showing a GridWorld controlled by a Thumper<GridWorld>.
+@immutable
 class GolGrid extends StatelessWidget {
+  /// Returns a widget sized to its [GolGridDimensions] argument.
+  /// It's assumed that the worlds provided in the state stream from
+  /// ThumperBloc<GridWorld> will all have matching dimensions (this is
+  /// assured if they came from a [GridWorldIterable]).
+  const GolGrid(
+    this._dim, {
+    Key key,
+    this.controlsForegroundColor = Colors.lightGreenAccent,
+    this.controlsBackgroundColor = Colors.black54,
+    this.foregroundColor = Colors.lightBlueAccent,
+    this.backgroundColor = Colors.black,
+  }) : super(key: key);
+
+  /// Thumper foreground color.
   final Color controlsForegroundColor;
+
+  /// Thumper background color.
   final Color controlsBackgroundColor;
+
+  /// Game of life live cell color.
   final Color foregroundColor;
+
+  /// Game of life dead cell color.
   final Color backgroundColor;
 
   /// Calculator for this widget.
   final GolGridDimensions _dim;
 
-  /// Returns a widget sized to its [GolGridDimensions] argument.
-  /// It's assumed that the worlds provided in the state stream from
-  /// ThumperBloc<GridWorld> will all have matching dimensions (this is
-  /// assured if they came from a [GridWorldIterable]).
-  GolGrid(
-    this._dim, {
-    this.controlsForegroundColor = Colors.lightGreenAccent,
-    this.controlsBackgroundColor = Colors.black54,
-    this.foregroundColor = Colors.lightBlueAccent,
-    this.backgroundColor = Colors.black,
-  });
-
-  Widget build(BuildContext c) =>
-      BlocBuilder<ThumperBloc<GridWorld>, ThumperState>(
+  @override
+  Widget build(BuildContext context) =>
+      BlocBuilder<ThumperBloc<GridWorld>, ThumperState<GridWorld>>(
         condition: (previousState, incomingState) =>
             incomingState.thumpCount != previousState.thumpCount,
-        builder: (context, state) {
-          return _column(state.thing, _dim.worldSize(state.thing));
-        },
+        builder: (ctx, state) =>
+            _column(state.thing, _dim.worldSize(state.thing)),
       );
   Widget _column(GridWorld gw, Size size) => Container(
         width: size.width,
@@ -56,16 +67,14 @@ class GolGrid extends StatelessWidget {
 /// The color should match the color of a dead cell,
 /// or we'll be obligated to explicitly draw dead cells.
 class _BackgroundPainter extends CustomPainter {
-  final Rect _rect;
-  final Paint _paint;
-
-  static Paint _makeBackgroundPaint(Color color) {
-    return Paint()..color = color;
-  }
-
   _BackgroundPainter(Size s, Color c)
       : _rect = Rect.fromLTRB(0, 0, s.width, s.height),
         _paint = _makeBackgroundPaint(c);
+
+  final Rect _rect;
+  final Paint _paint;
+
+  static Paint _makeBackgroundPaint(Color color) => Paint()..color = color;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -78,15 +87,24 @@ class _BackgroundPainter extends CustomPainter {
 }
 
 /// Calculates various dimensions.
+@immutable
 class GolGridDimensions {
+  /// Make the dimensions.
+  GolGridDimensions({this.lineWidth = 1, this.cellWidth = 3})
+      : assert(cellWidth > 0 && lineWidth > 0, 'nonsense values'),
+        cellSize = _makeCellSize(cellWidth);
+
   /// Grid line width in logical pixels.
   final int lineWidth;
 
   /// Grid cell width in logical pixels.
   final int cellWidth;
 
-  /// Cell size in logical pixels.
+  /// Cell size in logical pixels. Cells are square.
   final Size cellSize;
+
+  /// Cells are square.
+  static Size _makeCellSize(int w) => Size(w.toDouble(), w.toDouble());
 
   /// Lets the client see how many Gol cells will fit in a given height, given
   /// the fixed cell, line and control widths used by this widget.
@@ -95,9 +113,6 @@ class GolGridDimensions {
 
   /// Like [cellCountInHeight], but for width.
   int cellCountInWidth(double length) => howManyCellsFit(length);
-
-  /// Cells are square.
-  static Size _makeCellSize(int w) => Size(w.toDouble(), w.toDouble());
 
   /// How many cells can be crammed into the given length?
   /// Takes the line (spacer) between each cell into account.
@@ -120,14 +135,12 @@ class GolGridDimensions {
   int howManyCellsFit(double length) =>
       ((length + lineWidth) / (cellWidth + lineWidth)).floor();
 
+  /// Size of world in logical pixels.
   Size worldSize(GridWorld gw) => Size(offset(gw.nCols), offset(gw.nRows));
 
+  /// Where is (square) cell number i?
   double offset(int i) =>
       (lineWidth + (i * (cellWidth + lineWidth))).toDouble();
-
-  GolGridDimensions({this.lineWidth = 1, this.cellWidth = 3})
-      : assert(cellWidth > 0 && lineWidth > 0),
-        cellSize = _makeCellSize(cellWidth);
 }
 
 /// _CellPainter knows how wide cells are, their color,
@@ -135,25 +148,23 @@ class GolGridDimensions {
 /// or dead cells; that's just the background
 /// showing through.
 class _CellPainter extends CustomPainter {
+  _CellPainter(this._gw, this._c, Color foregroundColor)
+      : _cellPaint = _makeCellPaint(foregroundColor);
+
   final GolGridDimensions _c;
   final GridWorld _gw;
   final Paint _cellPaint;
 
   /// Cells could presumably be partially transparent too.
-  static Paint _makeCellPaint(Color color) {
-    return Paint()..color = color;
-  }
-
-  _CellPainter(this._gw, this._c, Color foregroundColor)
-      : _cellPaint = _makeCellPaint(foregroundColor);
+  static Paint _makeCellPaint(Color color) => Paint()..color = color;
 
   @override
   void paint(Canvas canvas, Size size) {
-    for (int i = 0; i < _gw.nRows; i++) {
-      for (int j = 0; j < _gw.nCols; j++) {
+    for (var i = 0; i < _gw.nRows; i++) {
+      for (var j = 0; j < _gw.nCols; j++) {
         if (_gw.isAlive(i, j)) {
           // Only draw live cells; assume dead cell matches background.
-          Rect r = Offset(_c.offset(j), _c.offset(i)) & _c.cellSize;
+          final r = Offset(_c.offset(j), _c.offset(i)) & _c.cellSize;
           canvas.drawRect(r, _cellPaint);
         }
       }

@@ -122,14 +122,14 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.1.4"
+    version: "0.1.5"
   grid_world:
     dependency: "direct main"
     description:
       name: grid_world
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.10"
+    version: "1.0.1"
   html:
     dependency: transitive
     description:
@@ -414,7 +414,7 @@ packages:
       name: thumper
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.8"
+    version: "1.0.0"
   tuple:
     dependency: transitive
     description:

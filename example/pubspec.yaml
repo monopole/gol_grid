@@ -9,10 +9,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  grid_world: ^0.1.10
-  thumper: ^0.1.6
+  grid_world: ^1.0.1
   gol_grid:
     path: ../
+  thumper: ^1.0.0
 
 dev_dependencies:
   flutter_test:

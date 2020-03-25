@@ -1,9 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gol_grid/gol_grid.dart';
-import 'package:grid_world/grid_world.dart';
 
 void main() {
-  testWidgets('TODO add a bloc and test', (WidgetTester tester) async {
+  testWidgets('TODO add a bloc and test', (tester) async {
     // Build our app and trigger a frame.
 //    await tester.pumpWidget(GolGrid(GolGridDimensions()));
 
@@ -20,9 +19,8 @@ void main() {
 //    expect(find.text('1'), findsOneWidget);
   });
 
-
   test('toString', () {
-    var grid = GolGrid(GolGridDimensions());
+    final grid = GolGrid(GolGridDimensions());
     expect(grid.toString(), equals('GolGrid'));
   });
 }

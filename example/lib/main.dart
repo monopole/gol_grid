@@ -5,7 +5,9 @@ import 'package:grid_world/grid_world.dart';
 import 'package:thumper/thumper.dart';
 import 'package:tuple/tuple.dart';
 
-void main() => runApp(GolApp());
+// ignore_for_file: diagnostic_describe_all_properties
+
+void main() => runApp(const GolApp());
 
 /// A GridWorld to display.
 final GridWorld fancyWorld = ConwayEvolver.gunFight()
@@ -19,10 +21,15 @@ final GridWorld simpleWorld = ConwayEvolver.rPentimino
     .appendBottom(ConwayEvolver.lightweightSpaceship)
     .padBottom(1);
 
+/// A demo of a single GolGrid widget, either small (on web) or
+/// full screen (on android).
+@immutable
 class GolApp extends StatelessWidget {
-  final bool isWebDemo;
+  /// Make an app instance.
+  const GolApp({this.isWebDemo = false});
 
-  GolApp({this.isWebDemo = false});
+  /// Web or android?
+  final bool isWebDemo;
 
   @override
   Widget build(BuildContext context) => MaterialApp(
@@ -37,6 +44,8 @@ class GolApp extends StatelessWidget {
 /// Shows one GolGrid widget, centered,
 /// with an AppBar that doesn't do anything yet.
 class _MyScaffold extends StatelessWidget {
+  const _MyScaffold({this.useFullScreen = true, this.doFancyDemo = true});
+
   /// A guess as to the media height (virtual pixels) consumed by the AppBar.
   /// TODO: Instead of guessing, look up the appbar via a key, e.g.
   /// medium.com/@diegoveloper/flutter-widget-size-and-position-b0a9ffed9407
@@ -46,8 +55,7 @@ class _MyScaffold extends StatelessWidget {
   /// in integer GolGrid cell units. Takes AppBar into account.
   static Tuple2<int, int> _sizeAvailableToShowGrid(
       BuildContext c, GolGridDimensions d) {
-    Size s = MediaQuery.of(c).size;
-    print(MediaQuery.of(c));
+    final s = MediaQuery.of(c).size;
     return Tuple2(d.cellCountInWidth(s.width),
         d.cellCountInHeight(s.height - _estimatedAppBarHeight));
   }
@@ -66,10 +74,9 @@ class _MyScaffold extends StatelessWidget {
   final bool useFullScreen;
   final bool doFancyDemo;
 
-  _MyScaffold({this.useFullScreen = true, this.doFancyDemo = true});
   @override
   Widget build(BuildContext c) {
-    var dimensions = doFancyDemo
+    final dimensions = doFancyDemo
         ? GolGridDimensions()
         : GolGridDimensions(lineWidth: 3, cellWidth: 9);
 
@@ -82,7 +89,7 @@ class _MyScaffold extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.black26,
         appBar: AppBar(
-          title: Text('game of life'),
+          title: const Text('game of life'),
           leading: Icon(Icons.menu), // Does nothing at the moment.
         ),
         body: Container(
