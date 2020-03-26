@@ -12,7 +12,7 @@ dependencies:
   grid_world: ^1.0.1
   gol_grid:
     path: ../
-  thumper: ^1.0.0
+  thumper: ^1.0.2
 
 dev_dependencies:
   flutter_test:
