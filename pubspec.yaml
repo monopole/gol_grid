@@ -1,6 +1,6 @@
 name:  gol_grid
 description: A widget showing a controllable square grid of cellular automata.
-version: 0.1.5
+version: 0.1.6
 homepage: https://github.com/monopole/gol_grid
 
 environment:
@@ -12,7 +12,7 @@ dependencies:
   flutter_bloc: ^3.2.0
   grid_world: ^1.0.1
   test: ^1.14.2
-  thumper: ^1.0.2
+  thumper: ^2.0.0
 
 dev_dependencies:
   flutter_test:

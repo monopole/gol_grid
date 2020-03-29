@@ -1,3 +1,6 @@
+## 0.1.6
+ - Depend on thumper 2.0.0
+
 ## 0.1.5
  - Depend on thumper 1.0.0, grid_world 1.0.1
 

@@ -18,7 +18,7 @@ cruising below an [R-pentomino].
 | ----------------------- | ----------------------- |
 | ![screen shot 1][shot1] | ![screen shot 2][shot2] |
 
-Install [flutter], then
+Install [flutter] (for chrome demo, use [beta channel flutter]), then
 
 ```bash
 # Confirm you have some devices.
@@ -27,22 +27,11 @@ flutter devices
 # Get the code
 git clone git@github.com:monopole/gol_grid.git
 cd gol_grid
-flutter test
-cd example
-```
 
-For chrome (at time of writing, requires [beta channel flutter]):
-
-```bash
-flutter -d chrome run -t lib/web.dart
-```
-
-For android, plug in your phone, enable dev options and
-allow file transfer over USB, then:
-
-```bash
-# See `flutter devices` for possible arguments
-flutter -d pixel run
+# then either
+make demo-chrome
+# or
+make demo-android
 ```
 
 [beta channel flutter]: https://flutter.dev/docs/get-started/web
