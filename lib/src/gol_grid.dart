@@ -75,10 +75,13 @@ class GolGrid extends StatelessWidget {
       );
 }
 
-/// _BackgroundPainter paints what's behind the cells.
-/// It's just a solid color; no grid lines.
-/// The color should match the color of a dead cell,
-/// or we'll be obligated to explicitly draw dead cells.
+// _BackgroundPainter paints what's behind the cells.
+// Could use this to, say, draw fancy grid lines, recently
+// dead cell animations, etc.
+// Not using this because if the background is just a solid color,
+// can just rely on the encapsulating [Container]'s color.
+// The [Container] color should match the color of a dead cell,
+// or we'll be obligated to explicitly draw dead cells.
 // ignore: unused_element
 class _BackgroundPainter extends CustomPainter {
   _BackgroundPainter(Size s, Color c)
