@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gol_grid/gol_grid.dart';
+import 'package:grid_world/grid_world.dart';
 
 void main() {
   testWidgets('TODO add a bloc and test', (tester) async {
@@ -20,7 +21,7 @@ void main() {
   });
 
   test('toString', () {
-    final grid = GolGrid(GolGridDimensions());
+    final grid = GolGrid(DimensionedWorld.make(ConwayEvolver.glider));
     expect(grid.toString(), equals('GolGrid'));
   });
 }

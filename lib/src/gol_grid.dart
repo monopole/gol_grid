@@ -2,24 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grid_world/grid_world.dart';
 import 'package:thumper/thumper.dart';
-import 'gol_grid_dimensions.dart';
+import 'dimensioned_world.dart';
 
 // ignore_for_file: diagnostic_describe_all_properties
 
 /// GolGrid is a widget showing a GridWorld controlled by a Thumper<GridWorld>.
 @immutable
 class GolGrid extends StatelessWidget {
-  /// Returns a widget sized to its [GolGridDimensions] argument.
+  /// Returns a widget sized to its [DimensionedWorld] argument.
   /// It's assumed that the worlds provided in the state stream from
   /// ThumperBloc<GridWorld> will all have matching dimensions (this is
   /// assured if they came from a [GridWorldIterable]).
   const GolGrid(
-    this._dim, {
+    this._dimensions, {
     Key key,
-    this.controlsForegroundColor = Colors.lightGreenAccent,
-    this.controlsBackgroundColor = Colors.black54,
     this.foregroundColor = Colors.lightBlueAccent,
     this.backgroundColor = Colors.black,
+        this.controlsForegroundColor = Colors.lightGreenAccent,
+        this.controlsBackgroundColor = Colors.black,
   }) : super(key: key);
 
   /// Thumper foreground color.
@@ -34,31 +34,42 @@ class GolGrid extends StatelessWidget {
   /// Game of life dead cell color.
   final Color backgroundColor;
 
-  /// Calculator for this widget.
-  final GolGridDimensions _dim;
+  /// [GridWorld] plus dimensions associated with rendering.
+  final DimensionedWorld _dimensions;
 
   @override
-  Widget build(BuildContext context) =>
-      BlocBuilder<ThumperBloc<GridWorld>, ThumperState<GridWorld>>(
-        condition: (previousState, incomingState) =>
-            incomingState.thumpCount != previousState.thumpCount,
-        builder: (ctx, state) =>
-            _column(state.thing, _dim.worldSize(state.thing)),
+  Widget build(BuildContext context) => BlocProvider(
+        create: (context) => ThumperBloc<GridWorld>.fromIterable(
+            GridWorldIterable(_dimensions.gridWorld, limit: 5000)),
+        child: BlocBuilder<ThumperBloc<GridWorld>, ThumperState<GridWorld>>(
+          condition: (previousState, incomingState) =>
+              incomingState.thumpCount != previousState.thumpCount,
+          builder: (ctx, state) => _column(state.thing),
+        ),
       );
 
-  Widget _column(GridWorld gw, Size size) => Container(
-        width: size.width,
-        height: size.height + Thumper.height,
+  Widget _column(GridWorld gw) => Container(
+        width: _dimensions.worldSize.width + _dimensions.unusedWidth,
+        height: _dimensions.worldSize.height +
+            _dimensions.unusedHeight +
+            Thumper.height,
         color: backgroundColor,
+        padding: EdgeInsets.only(
+            left: _dimensions.unusedWidth / 2,
+            right: _dimensions.unusedWidth / 2),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CustomPaint(
-              foregroundPainter: _CellPainter(gw, _dim, foregroundColor),
-              painter: _BackgroundPainter(size, backgroundColor),
-              size: size,
+              foregroundPainter: _CellPainter(gw, _dimensions, foregroundColor),
+              //painter:
+              //    _BackgroundPainter(_dimensions.worldSize, backgroundColor),
+              size: _dimensions.worldSize,
             ),
-            Thumper<GridWorld>(onColor: controlsForegroundColor),
+            SizedBox(height: _dimensions.unusedHeight),
+            Container(
+                color: controlsBackgroundColor,
+                child: Thumper<GridWorld>(onColor: controlsForegroundColor)),
           ],
         ),
       );
@@ -93,10 +104,12 @@ class _BackgroundPainter extends CustomPainter {
 /// or dead cells; that's just the background
 /// showing through.
 class _CellPainter extends CustomPainter {
-  _CellPainter(this._gw, this._c, Color foregroundColor)
+  _CellPainter(this._gw, this._dw, Color foregroundColor)
       : _cellPaint = _makeCellPaint(foregroundColor);
 
-  final GolGridDimensions _c;
+  // Used to set dimensions.
+  final DimensionedWorld _dw;
+  // Has changing cells, but fixed dimensions.
   final GridWorld _gw;
   final Paint _cellPaint;
 
@@ -109,7 +122,7 @@ class _CellPainter extends CustomPainter {
       for (var j = 0; j < _gw.nCols; j++) {
         if (_gw.isAlive(i, j)) {
           // Only draw live cells; assume dead cell matches background.
-          final r = Offset(_c.offset(j), _c.offset(i)) & _c.cellSize;
+          final r = Offset(_dw.offset(j), _dw.offset(i)) & _dw.cellSize;
           canvas.drawRect(r, _cellPaint);
         }
       }
