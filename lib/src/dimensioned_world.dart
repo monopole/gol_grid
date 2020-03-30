@@ -7,9 +7,8 @@ import 'package:grid_world/grid_world.dart';
 /// E.g. the size of a cell, the distance between cells in pixels,
 /// the size of the entire world rendered in pixels.
 ///
-/// [DimensionedWorld] stores the [GridWorld] too, so that one can pass just the
-/// [DimensionedWorld] around and be able to expend the world (which requires
-/// adding cells to the [GridWorld]).
+/// [DimensionedWorld] stores the [GridWorld] too, making it possible
+/// to offer the [DimensionedWorld.expandToFit] method.
 @immutable
 class DimensionedWorld {
   /// Make a DimensionedWorld.
@@ -32,11 +31,9 @@ class DimensionedWorld {
   /// Private constructor that accepts vetted arguments for caching.
   const DimensionedWorld._(this.gridWorld, this._lineWidth, this._cellWidth,
       this.cellSize, this.worldSize,
-      {double unusedWidth = 0, double unusedHeight = 0})
+      {this.unusedWidth = 0, this.unusedHeight = 0})
       : assert(unusedWidth >= 0, 'unusedWidth must be >= 0'),
-        assert(unusedHeight >= 0, 'unusedWidth must be >= 0'),
-        unusedWidth = unusedWidth,
-        unusedHeight = unusedHeight;
+        assert(unusedHeight >= 0, 'unusedWidth must be >= 0');
 
   /// The world to be rendered.
   final GridWorld gridWorld;
@@ -68,7 +65,7 @@ class DimensionedWorld {
   static Size _makeWorldSize(GridWorld gw, int lW, int cW) =>
       Size(_offset(gw.nCols, lW, cW) - lW, _offset(gw.nRows, lW, cW) - lW);
 
-  /// Where is (square) cell number i?
+  /// Where is the left, top corner of (square) cell number i?
   double offset(int i) => _offset(i, _lineWidth, _cellWidth);
 
   /// This means no grid lines on borders.
@@ -79,26 +76,26 @@ class DimensionedWorld {
   ///
   /// Two ways to do this.
   ///
-  /// With grid lines on either side of the world:
+  /// With grid lines on all sides of the world:
   ///
   ///  length = ((nCells + 1)*_lineWidth) + (nCells * _cellWidth)
   ///         = (nCells * _lineWidth) + _lineWidth + (nCells * _cellWidth)
   ///  qed: nCells = (length - _lineWidth) / (_lineWidth + _cellWidth)
   ///
-  /// With no grid lines on either side:
+  /// With no grid lines on the sides:
   ///
   ///  length = ((nCells - 1)*_lineWidth) + (nCells * _cellWidth)
   ///         = (nCells * (_lineWidth + _cellWidth)) - _lineWidth
   ///  qed: nCells = (length + _lineWidth) / (_lineWidth + _cellWidth)
   ///
-  /// Must take the floor since we cannot allow fractional cells.
+  /// Must take the floor() since we cannot allow fractional cells.
   int _howManyCellsFit(double length) =>
       ((length + _lineWidth) / (_lineWidth + _cellWidth)).floor();
 
   /// Add rows and columns to the world, to give the automata
   /// as much space as possible to maneuver.
   /// This throws if the underlying [GridWorld] is already too
-  /// big to fit into the new dimensions.
+  /// big to fit into the new width and height.
   /// Could try using ClipRect over an oversized GridWorld.
   DimensionedWorld expandToFit(double width, double height) {
     final gw = gridWorld.expandToFit(

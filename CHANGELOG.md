@@ -1,3 +1,6 @@
+## 0.1.7
+ - improve chrome demo.
+
 ## 0.1.6
  - Depend on thumper 2.0.0
 

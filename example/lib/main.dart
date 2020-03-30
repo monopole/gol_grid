@@ -9,8 +9,7 @@ import 'package:thumper/thumper.dart';
 
 void main() => runApp(const DemoApp());
 
-/// A demo of a single GolGrid widget, either small (on web) or
-/// full screen (on android).
+/// A GolGrid widget demo.
 @immutable
 class DemoApp extends StatelessWidget {
   /// Make an app instance.
@@ -18,6 +17,7 @@ class DemoApp extends StatelessWidget {
 
   /// Web or android?
   final bool isWebDemo;
+  static const _spacer = SizedBox(height: 3);
 
   @override
   Widget build(BuildContext context) => MaterialApp(
@@ -31,82 +31,74 @@ class DemoApp extends StatelessWidget {
               title: const Text('Game of Life Demo'),
               leading: Icon(Icons.menu),
             ),
-            body: DemoSizingWidget(isWebDemo: isWebDemo)),
+            body: isWebDemo ? _manyWidgets() : FullScreenWidget()),
+      );
+
+  Widget _manyWidgets() => Center(
+        child: ListView(
+          children: <Widget>[
+            _spacer,
+            GolGrid(DimensionedWorld.make(ConwayEvolver.blinker.lrPadded(6),
+                lineWidth: 10, cellWidth: 30)),
+            _spacer,
+            GolGrid(
+                DimensionedWorld.make(
+                    ConwayEvolver.pentaDecathlon.clockwise90(),
+                    lineWidth: 6,
+                    cellWidth: 18),
+                foregroundColor: Colors.deepPurple),
+            _spacer,
+            GolGrid(DimensionedWorld.make(
+                ConwayEvolver.lightweightSpaceship
+                    .appendBottom(ConwayEvolver.lightweightSpaceship)
+                    .appendBottom(ConwayEvolver.lightweightSpaceship)
+                    .padRight(50),
+                lineWidth: 3,
+                cellWidth: 9)),
+            _spacer,
+            GolGrid(
+                DimensionedWorld.make(
+                    ConwayEvolver.gliderFleet().padRight(20).padBottom(30),
+                    lineWidth: 3,
+                    cellWidth: 9),
+                foregroundColor: Colors.redAccent),
+            _spacer,
+            GolGrid(DimensionedWorld.make(
+                ConwayEvolver.gosperGliderGun.padded(20),
+                lineWidth: 3,
+                cellWidth: 9)),
+            _spacer,
+            GolGrid(
+                DimensionedWorld.make(
+                    ConwayEvolver.rPentimino.lrPadded(70).tbPadded(60),
+                    lineWidth: 1,
+                    cellWidth: 3),
+                foregroundColor: Colors.white),
+            _spacer,
+          ],
+        ),
       );
 }
 
-/// DemoSizingWidget exists only to consult the media (via a MediaQuery)
-/// to size various aspects of the demo.  This widget wouldn't be needed
-/// if we weren't consulting the context below a MaterialApp, and instead
-/// did a fixed size GridWorld with fixed cell widths.
-class DemoSizingWidget extends StatelessWidget {
-  /// Make a wrapper with given defaults.
-  const DemoSizingWidget({this.isWebDemo = false});
-
-  /// Build a demo for Web or android?
-  /// On web, maybe use multiple smaller, simpler widgets.
-  /// On Android, maybe use one full screen complex widget.
-  final bool isWebDemo;
-
-  @override
-  Widget build(BuildContext context) =>
-      isWebDemo ? makeWebDemo() : makeAndroidDemo(context);
-
+/// [FullScreenWidget] does a MediaQuery to expand a [DimensionedWorld]
+/// to fill the media.  The query only works if this widget is below
+/// [MaterialApp] in the tree.
+class FullScreenWidget extends StatelessWidget {
   /// A guess as to the media height (virtual pixels) consumed by the AppBar.
   /// TODO: Instead of guessing, look up the appbar via a key, e.g.
   /// medium.com/@diegoveloper/flutter-widget-size-and-position-b0a9ffed9407
-  static double get _estimatedAppBarHeight => 80; // 81;
+  static double get _estimatedAppBarHeight => 80; // 80
 
-  /// One complex widget sized to fill the screen.
-  GolGrid makeAndroidDemo(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     final s = MediaQuery.of(context).size;
-    var dw = DimensionedWorld.make(ConwayEvolver.gunFight()
+    final dw = DimensionedWorld.make(ConwayEvolver.gunFight()
         .appendBottom(ConwayEvolver.rPentimino.padLeft(30).tbPadded(27))
         .appendBottom(ConwayEvolver.gunFight())
         .lrPadded(6));
-    dw = dw.expandToFit(
-        s.width, s.height - _estimatedAppBarHeight - Thumper.height);
-    return GolGrid(dw);
+    return GolGrid(
+        dw.expandToFit(
+            s.width, s.height - _estimatedAppBarHeight - Thumper.height),
+        foregroundColor: Colors.blue);
   }
-
-  /// Demo with fewer total cells in fixed size widgets.
-  Widget makeWebDemo() => Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              SizedBox(height: 3),
-              GolGrid(DimensionedWorld.make(ConwayEvolver.blinker.lrPadded(6),
-                  lineWidth: 6, cellWidth: 18)),
-              SizedBox(height: 3),
-              GolGrid(DimensionedWorld.make(
-                  ConwayEvolver.pentaDecathlon.clockwise90(),
-                  lineWidth: 6,
-                  cellWidth: 18)),
-              SizedBox(height: 3),
-              GolGrid(DimensionedWorld.make(
-                  ConwayEvolver.lightweightSpaceship
-                      .appendBottom(ConwayEvolver.lightweightSpaceship)
-                      .appendBottom(ConwayEvolver.lightweightSpaceship)
-                      .padRight(50),
-                  lineWidth: 3,
-                  cellWidth: 9)),
-              SizedBox(height: 3),
-              GolGrid(DimensionedWorld.make(
-                  ConwayEvolver.gliderFleet().padRight(20).padBottom(30),
-                  lineWidth: 3,
-                  cellWidth: 9)),
-              SizedBox(height: 3),
-              GolGrid(DimensionedWorld.make(
-                  ConwayEvolver.gosperGliderGun.padded(20),
-                  lineWidth: 3,
-                  cellWidth: 9)),
-              SizedBox(height: 3),
-              GolGrid(DimensionedWorld.make(ConwayEvolver.rPentimino.padded(50),
-                  lineWidth: 1, cellWidth: 3)),
-              SizedBox(height: 3),
-            ],
-          ),
-        ),
-      );
 }

@@ -18,15 +18,12 @@ class GolGrid extends StatelessWidget {
     Key key,
     this.foregroundColor = Colors.lightBlueAccent,
     this.backgroundColor = Colors.black,
-        this.controlsForegroundColor = Colors.lightGreenAccent,
-        this.controlsBackgroundColor = Colors.black,
+    this.controlsForegroundColor = Colors.lightGreenAccent,
+    this.controlsBackgroundColor = Colors.black,
   }) : super(key: key);
 
-  /// Thumper foreground color.
-  final Color controlsForegroundColor;
-
-  /// Thumper background color.
-  final Color controlsBackgroundColor;
+  /// [GridWorld] plus dimensions associated with rendering.
+  final DimensionedWorld _dimensions;
 
   /// Game of life live cell color.
   final Color foregroundColor;
@@ -34,8 +31,11 @@ class GolGrid extends StatelessWidget {
   /// Game of life dead cell color.
   final Color backgroundColor;
 
-  /// [GridWorld] plus dimensions associated with rendering.
-  final DimensionedWorld _dimensions;
+  /// Thumper foreground color.
+  final Color controlsForegroundColor;
+
+  /// Thumper background color.
+  final Color controlsBackgroundColor;
 
   @override
   Widget build(BuildContext context) => BlocProvider(
@@ -79,6 +79,7 @@ class GolGrid extends StatelessWidget {
 /// It's just a solid color; no grid lines.
 /// The color should match the color of a dead cell,
 /// or we'll be obligated to explicitly draw dead cells.
+// ignore: unused_element
 class _BackgroundPainter extends CustomPainter {
   _BackgroundPainter(Size s, Color c)
       : _rect = Rect.fromLTRB(0, 0, s.width, s.height),
