@@ -14,6 +14,14 @@ void main() {
 
   test('ctor', () {
     expect(dw.gridWorld, gw);
+    expect(dw.gridWorld.toString(), '''
+.....
+..#..
+..#..
+..#..
+.....
+.....
+''');
     expect(dw.cellSize, const Size(7, 7));
     expect(dw.gridWorld.nCols, 5);
     expect(dw.gridWorld.nRows, 6);
