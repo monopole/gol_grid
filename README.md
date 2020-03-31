@@ -11,17 +11,13 @@ a given world via the `Thumper`.
 
 The [example] contains two alternatives.
 
-One uses several of widgets in a scrollable column,
-which looks surprisingly decent in a browser (lots
-CSP and canvas work involved).
-
-The other does a media query to try to do one full
-screen demo with a complex world (four [Gosper guns]
-and an [R-pentomino]).
-
-The former looks like this:
+One uses several of widgets in a scrollable column:
 
 ![movie][movie]
+
+The other does a media query to do a full
+screen demo with a complex world (four [Gosper guns]
+and an [R-pentomino]).
 
 To run the examples, install [flutter] (for `demo-web`
 demo, use [beta channel flutter]), then
