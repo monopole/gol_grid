@@ -20,6 +20,7 @@ class GolGrid extends StatelessWidget {
     this.backgroundColor = Colors.black,
     this.controlsForegroundColor = Colors.lightGreenAccent,
     this.controlsBackgroundColor = Colors.black,
+    this.hardIterationLimit = 10000,
   }) : super(key: key);
 
   /// [GridWorld] plus dimensions associated with rendering.
@@ -37,10 +38,16 @@ class GolGrid extends StatelessWidget {
   /// Thumper background color.
   final Color controlsBackgroundColor;
 
+  /// When this limit is hit, automatically halt iteration.
+  /// No way to continue - must reset and start over.
+  /// This is nothing more than energy conservation.
+  final int hardIterationLimit;
+
   @override
   Widget build(BuildContext context) => BlocProvider(
         create: (context) => ThumperBloc<GridWorld>.fromIterable(
-            GridWorldIterable(_dimensions.gridWorld, limit: 5000)),
+            GridWorldIterable(_dimensions.gridWorld,
+                limit: hardIterationLimit)),
         child: BlocBuilder<ThumperBloc<GridWorld>, ThumperState<GridWorld>>(
           condition: (previousState, incomingState) =>
               incomingState.thumpCount != previousState.thumpCount,
@@ -76,12 +83,13 @@ class GolGrid extends StatelessWidget {
 }
 
 // _BackgroundPainter paints what's behind the cells.
-// Could use this to, say, draw fancy grid lines, recently
-// dead cell animations, etc.
+// Could use this to, say, draw fancy throbbing grid lines,
+// recently dead cell animations, etc.
 // Not using this because if the background is just a solid color,
-// can just rely on the encapsulating [Container]'s color.
+// the widget can just rely on the encapsulating [Container]'s color.
 // The [Container] color should match the color of a dead cell,
-// or we'll be obligated to explicitly draw dead cells.
+// or we'll be obligated to explicitly draw dead cells, which
+// doesn't happen at the time of writing.
 // ignore: unused_element
 class _BackgroundPainter extends CustomPainter {
   _BackgroundPainter(Size s, Color c)

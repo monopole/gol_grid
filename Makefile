@@ -9,8 +9,8 @@ test:
 lint:
 	dartanalyzer --options analysis_options.yaml .
 
-.PHONY: demo-chrome
-demo-chrome:
+.PHONY: demo-web
+demo-web:
 	# This may require beta channel flutter.
 	cd example; flutter -d chrome run -t lib/web.dart
 

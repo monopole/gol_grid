@@ -23,7 +23,7 @@ The former looks like this:
 
 ![movie][movie]
 
-To run the examples, install [flutter] (for chrome
+To run the examples, install [flutter] (for `demo-web`
 demo, use [beta channel flutter]), then
 
 ```bash
@@ -35,9 +35,9 @@ git clone git@github.com:monopole/gol_grid.git
 cd gol_grid
 
 # then either
-make demo-chrome
+make demo-android # needs USB connected device
 # or
-make demo-android
+make demo-web # needs chrome
 ```
 
 It should also run on iOS.
