@@ -16,7 +16,7 @@ The other does a media query to do a full
 screen demo with a complex world (four [Gosper guns]
 and an [R-pentomino]):
 
-[![movie android](images/android.png)](https://youtu.be/x6oBF_giM-s)
+[![movie android][android1]](https://youtu.be/x6oBF_giM-s)
 
 To run the examples, install [flutter] (for `demo-web`
 demo, use [beta channel flutter]), then
@@ -45,8 +45,7 @@ make demo-web # needs chrome
 [R-pentomino]: https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life#Examples_of_patterns
 [spaceship]: https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life#Examples_of_patterns
 [example]: example/lib/main.dart
-[shot1]: images/shot1.png
-[shot2]: images/shot2.png
+[android1]: images/android1.png
 [inVideo]: https://youtu.be/DIPRQGnh4Nc
 [inMovie]: images/demo-chrome-at-v0.1.7.mp4
 [flutter]: https://flutter.dev/docs/get-started/install
