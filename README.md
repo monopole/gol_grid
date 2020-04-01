@@ -36,8 +36,6 @@ make demo-web # needs chrome
 ```
 
 
-
-
 [beta channel flutter]: https://flutter.dev/docs/get-started/web
 [`GolGrid`]: https://pub.dev/packages/gol_grid
 [`GridWorld`]: https://pub.dev/packages/grid_world

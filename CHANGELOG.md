@@ -1,3 +1,6 @@
+## 0.1.8
+ - android movie
+
 ## 0.1.7
  - improve chrome demo.
 
