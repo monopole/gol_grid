@@ -8,13 +8,14 @@ A [`GolGrid`] is a rendering of a [`GridWorld`] controlled by a [`Thumper`].
 
 The [example] contains two alternatives.
 
-One uses several of widgets in a scrollable column:
+One uses several relatively small widgets in a scrollable column,
+suitable for a browser:
 
 [![movie web](https://img.youtube.com/vi/DIPRQGnh4Nc/0.jpg)](https://youtu.be/DIPRQGnh4Nc)
 
 The other does a media query to do a full
 screen demo with a complex world (four [Gosper guns]
-and an [R-pentomino]):
+and an [R-pentomino]), more suitable for android:
 
 [![movie android][android1]](https://youtu.be/x6oBF_giM-s)
 
