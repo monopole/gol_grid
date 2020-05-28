@@ -1,3 +1,6 @@
+## 0.1.9
+ - upgrade to bloc 4.0.0
+
 ## 0.1.8
  - android movie
 
