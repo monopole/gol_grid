@@ -15,7 +15,7 @@ class GolGrid extends StatelessWidget {
   /// assured if they came from a [GridWorldIterable]).
   const GolGrid(
     this._dimensions, {
-    Key key,
+    Key? key,
     this.foregroundColor = Colors.lightBlueAccent,
     this.backgroundColor = Colors.black,
     this.controlsForegroundColor = Colors.lightGreenAccent,
@@ -49,7 +49,7 @@ class GolGrid extends StatelessWidget {
             GridWorldIterable(_dimensions.gridWorld,
                 limit: hardIterationLimit)),
         child: BlocBuilder<ThumperBloc<GridWorld>, ThumperState<GridWorld>>(
-          condition: (previousState, incomingState) =>
+          buildWhen: (previousState, incomingState) =>
               incomingState.thumpCount != previousState.thumpCount,
           builder: (ctx, state) => _column(state.thing),
         ),

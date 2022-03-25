@@ -7,11 +7,10 @@ test:
 
 .PHONY: lint
 lint:
-	dartanalyzer --options analysis_options.yaml .
+	dart analyze
 
 .PHONY: demo-web
 demo-web:
-	# This may require beta channel flutter.
 	cd example; flutter -d chrome run -t lib/web.dart
 
 .PHONY: demo-android

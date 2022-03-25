@@ -4,8 +4,8 @@ import 'package:gol_grid/src/dimensioned_world.dart';
 import 'package:grid_world/grid_world.dart';
 
 void main() {
-  GridWorld gw;
-  DimensionedWorld dw;
+  late GridWorld gw;
+  late DimensionedWorld dw;
 
   setUp(() {
     gw = ConwayEvolver.blinker.padBottom(1);
